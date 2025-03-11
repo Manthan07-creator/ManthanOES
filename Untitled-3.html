@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Examination System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        .header {
+            background-color: #1a73e8;
+            padding: 15px 0;
+            color: white;
+            text-align: center;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .section {
+            display: none;
+        }
+        #homePage {
+            display: block;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #1557b0;
+        }
+        .login-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 50px;
+        }
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .login-form input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .dashboard-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .dashboard-nav button {
+            background-color: #f0f2f5;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .dashboard-nav button.active {
+            background-color: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .test-card {
+            margin-bottom: 15px;
+        }
+        .package-card {
+            text-align: center;
+        }
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #1a73e8;
+        }
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .rank {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 15px;
+            color: #1a73e8;
+        }
+        .marquee {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            padding: 12px 0;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .marquee marquee {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .marquee span {
+            margin: 0 20px;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+        .analysis-chart {
+            height: 200px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .strength-weakness {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        /* Test Interface Styles */
+        .test-interface {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .timer {
+            font-size: 1.5em;
+            color: #1a73e8;
+            font-weight: bold;
+        }
+        .question-container {
+            margin-bottom: 30px;
+        }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option-item {
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option-item:hover {
+            background: #f8f9fa;
+            border-color: #1a73e8;
+        }
+        .option-item.selected {
+            background: #e8f0fe;
+            border-color: #1a73e8;
+        }
+        .test-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">Online Examination System</div>
+            <div class="nav-links">
+                <a href="#" onclick="showSection('home')">DASHBOARD</a>
+                <a href="#" onclick="showSection('packages')">PACKAGES</a>
+                <a href="#" onclick="showSection('leaderboard')">LEADERBOARDS</a>
+                <a href="#" onclick="showSection('contact')">CONTACT</a>
+                <a href="#" onclick="showLoginOptions()">LOGIN</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="marquee">
+        <marquee behavior="scroll" direction="left" scrollamount="5">
+            <span>🔔 NEW: Science Test Series launched!</span>
+            <span>💰 30% discount on Mathematics Package until June 30</span>
+            <span>🏆 Congratulations to our top performers of May 2023</span>
+            <span>⚙️ System maintenance: June 15, 10:00 PM - 2:00 AM</span>
+        </marquee>
+    </div>
+
+    <!-- Home Page Content -->
+    <div class="container section" id="homePage">
+        <div class="hero-section" style="text-align: center; padding: 50px 0; background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; border-radius: 15px; margin-bottom: 30px;">
+            <h1 style="font-size: 2.5em; margin-bottom: 20px;">Welcome to Online Examination System</h1>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">Empowering Students with Advanced Learning Tools and Assessment Solutions</p>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <button class="button" style="background: white; color: #1a73e8;" onclick="showSection('packages')">View Packages</button>
+                <button class="button" style="background: transparent; border: 2px solid white;" onclick="showLoginOptions()">Get Started</button>
+            </div>
+        </div>
+        
+        <div class="features-section" style="margin-bottom: 40px;">
+            <h2 style="text-align: center; margin-bottom: 30px;">Why Choose Us?</h2>
+            <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2em; color: #1a73e8; margin-bottom: 15px;">📚</div>
+                    <h3>Comprehensive Study Material</h3>
+                    <p>Access high-quality study materials prepared by expert educators</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2em; color: #1a73e8; margin-bottom: 15px;">📊</div>
+                    <h3>Advanced Analytics</h3>
+                    <p>Track your progress with detailed performance analytics</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2em; color: #1a73e8; margin-bottom: 15px;">🎯</div>
+                    <h3>Personalized Learning</h3>
+                    <p>Get customized study plans based on your performance</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Latest Announcements</h3>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span style="color: #1a73e8;">NEW</span> AI-based Learning Modules launched
+                    </li>
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span style="color: #1a73e8;">UPDATE</span> Study Materials for 2023-24 Academic Year
+                    </li>
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span style="color: #1a73e8;">OFFER</span> Special Discount for Early Birds - Register Now!
+                    </li>
+                    <li style="padding: 10px 0;">
+                        <span style="color: #1a73e8;">NEW</span> Computer Science Fundamentals Course Added
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>System Updates</h3>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span style="color: #1a73e8;">🔔</span> New Test Series Available
+                    </li>
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span style="color: #1a73e8;">📚</span> Updated Study Material
+                    </li>
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span style="color: #1a73e8;">💰</span> Special Discount for Early Birds
+                    </li>
+                    <li style="padding: 10px 0;">
+                        <span style="color: #1a73e8;">⚙️</span> System Maintenance: June 15, 10 PM - 2 AM
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="testimonials-section" style="margin-top: 40px;">
+            <h2 style="text-align: center; margin-bottom: 30px;">What Our Students Say</h2>
+            <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2em; color: #1a73e8; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                    <p style="font-style: italic;">"The practice tests helped me improve my scores significantly!"</p>
+                    <p style="color: #666; margin-top: 10px;">- Sarah M.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2em; color: #1a73e8; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                    <p style="font-style: italic;">"Excellent study materials and very helpful analytics."</p>
+                    <p style="color: #666; margin-top: 10px;">- John D.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2em; color: #1a73e8; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                    <p style="font-style: italic;">"The best online examination platform I've used!"</p>
+                    <p style="color: #666; margin-top: 10px;">- Emily R.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Packages Section -->
+    <div class="container section" id="packagesSection">
+        <h2>Our Packages</h2>
+        <div class="grid">
+            <div class="card package-card">
+                <h3>Basic Package</h3>
+                <div class="price">₹999/month</div>
+                <ul>
+                    <li>Access to 3 subjects of your choice</li>
+                    <li>5 Practice Tests per subject/month</li>
+                    <li>Basic Performance Analytics</li>
+                    <li>Email Support</li>
+                </ul>
+                <button class="button">Choose Plan</button>
+            </div>
+            <div class="card package-card">
+                <h3>Standard Package</h3>
+                <div class="price">₹1,999/month</div>
+                <ul>
+                    <li>Access to all 5 subjects</li>
+                    <li>15 Practice Tests per subject/month</li>
+                    <li>Detailed Performance Analytics</li>
+                    <li>Priority Email Support</li>
+                    <li>Study Material PDF Downloads</li>
+                </ul>
+                <button class="button">Choose Plan</button>
+            </div>
+            <div class="card package-card">
+                <h3>Premium Package</h3>
+                <div class="price">₹2,999/month</div>
+                <ul>
+                    <li>Access to all subjects</li>
+                    <li>Unlimited Practice Tests</li>
+                    <li>Advanced Analytics with AI Recommendations</li>
+                    <li>24/7 Priority Support</li>
+                    <li>All Study Materials with Video Lectures</li>
+                    <li>1-on-1 Monthly Consultation</li>
+                </ul>
+                <button class="button">Choose Plan</button>
+            </div>
+            <div class="card package-card">
+                <h3>Subject-wise Packages</h3>
+                <div class="price">Starting at ₹499/month</div>
+                <ul>
+                    <li>Mathematics - ₹499/month (10 tests)</li>
+                    <li>Science - ₹499/month (10 tests)</li>
+                    <li>English - ₹399/month (10 tests)</li>
+                    <li>Social Studies - ₹399/month (10 tests)</li>
+                    <li>Computer Science - ₹599/month (10 tests)</li>
+                </ul>
+                <button class="button">View Details</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Section -->
+    <div class="container section" id="leaderboardSection">
+        <h2>Leaderboard - Top Performers</h2>
+        <div class="card">
+            <div class="leaderboard-item">
+                <div class="rank">1</div>
+                <div>
+                    <h3>Sophia Johnson</h3>
+                    <p>Overall Score: 98.5% | Tests Completed: 45</p>
+                </div>
+            </div>
+            <div class="leaderboard-item">
+                <div class="rank">2</div>
+                <div>
+                    <h3>James Wilson</h3>
+                    <p>Overall Score: 97.2% | Tests Completed: 42</p>
+                </div>
+            </div>
+            <div class="leaderboard-item">
+                <div class="rank">3</div>
+                <div>
+                    <h3>Emma Davis</h3>
+                    <p>Overall Score: 96.8% | Tests Completed: 40</p>
+                </div>
+            </div>
+            <div class="leaderboard-item">
+                <div class="rank">4</div>
+                <div>
+                    <h3>Michael Brown</h3>
+                    <p>Overall Score: 95.5% | Tests Completed: 38</p>
+                </div>
+            </div>
+            <div class="leaderboard-item">
+                <div class="rank">5</div>
+                <div>
+                    <h3>Olivia Martinez</h3>
+                    <p>Overall Score: 94.9% | Tests Completed: 41</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="container section" id="contactSection">
+        <h2>Contact Us</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Send us a Message</h3>
+                <form>
+                    <div style="margin-bottom: 15px;">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="subject">Subject:</label>
+                        <input type="text" id="subject" style="width: 100%; padding: 8px; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="message">Message:</label>
+                        <textarea id="message" rows="5" style="width: 100%; padding: 8px; margin-top: 5px;"></textarea>
+                    </div>
+                    <button type="submit" class="button">Send Message</button>
+                </form>
+            </div>
+            <div class="card">
+                <h3>Contact Information</h3>
+                <p><strong>Customer Support:</strong> support@examonline.com</p>
+                <p><strong>Technical Help:</strong> tech@examonline.com</p>
+                <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+                <p><strong>Hours:</strong> Monday to Friday, 9:00 AM - 6:00 PM EST</p>
+                <h3>Office Address</h3>
+                <p>123 Education Street<br>Learning City, ED 12345<br>United States</p>
+                <h3>Follow Us</h3>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <a href="#" style="text-decoration: none;">Facebook</a>
+                    <a href="#" style="text-decoration: none;">Twitter</a>
+                    <a href="#" style="text-decoration: none;">LinkedIn</a>
+                    <a href="#" style="text-decoration: none;">Instagram</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Options -->
+    <div class="container section" id="loginOptions" style="display: none;">
+        <h2>Login to Your Account</h2>
+        <div class="login-options">
+            <div class="login-card">
+                <h3>Student Login</h3>
+                <p>Access your tests, study materials, and track your progress</p>
+                <button class="button" onclick="showLogin('student')">Student Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Login Form -->
+    <div class="container section" id="studentLogin" style="display: none;">
+        <h2>Student Login</h2>
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="card">
+                <form class="login-form" onsubmit="handleStudentLogin(event)">
+                    <input type="text" placeholder="Student ID" required>
+                    <input type="password" placeholder="Password" required>
+                    <button type="submit" class="button">Login</button>
+                </form>
+                <div style="margin-top: 15px; text-align: center;">
+                    <a href="#">Forgot Password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Dashboard -->
+    <div class="container section" id="studentDashboard" style="display: none;">
+        <h2>Welcome Student</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Recent Performance</h3>
+                <p>Overall Score: <strong>82%</strong></p>
+                <p>Tests Completed: <strong>15/20</strong></p>
+                <p>Ranking: <strong>#42</strong> out of 500 students</p>
+            </div>
+            <div class="card">
+                <h3>Upcoming Tests</h3>
+                <ul>
+                    <li>Mathematics Advanced - June 15</li>
+                    <li>Science Comprehensive - June 20</li>
+                    <li>English Proficiency - June 25</li>
+                    <li>Social Studies - June 30</li>
+                </ul>
+            </div>
+        </div>
+        <div class="dashboard-nav" style="margin-top: 20px;">
+            <button class="button" onclick="showSection('studyMaterial')">Study Material</button>
+            <button class="button" onclick="showSection('tests')">Tests</button>
+            <button class="button" onclick="showSection('results')">Results & Analysis</button>
+        </div>
+
+        <!-- Study Material Section -->
+        <div id="studyMaterial" class="dashboard-section" style="display: none;">
+            <h3>Study Materials</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4>Mathematics</h4>
+                    <ul>
+                        <li><a href="#">Algebra Fundamentals</a></li>
+                        <li><a href="#">Geometry Basics</a></li>
+                        <li><a href="#">Calculus Introduction</a></li>
+                        <li><a href="#">Statistics and Probability</a></li>
+                        <li><a href="#">Trigonometry Concepts</a></li>
+                        <li><a href="#">Linear Algebra</a></li>
+                    </ul>
+                    <button class="button">View All</button>
+                </div>
+                <div class="card">
+                    <h4>Science</h4>
+                    <ul>
+                        <li><a href="#">Physics Mechanics</a></li>
+                        <li><a href="#">Chemistry Basics</a></li>
+                        <li><a href="#">Biology Cell Structure</a></li>
+                        <li><a href="#">Earth Science</a></li>
+                        <li><a href="#">Thermodynamics</a></li>
+                        <li><a href="#">Organic Chemistry</a></li>
+                    </ul>
+                    <button class="button">View All</button>
+                </div>
+                <div class="card">
+                    <h4>English</h4>
+                    <ul>
+                        <li><a href="#">Grammar Rules</a></li>
+                        <li><a href="#">Vocabulary Building</a></li>
+                        <li><a href="#">Essay Writing</a></li>
+                        <li><a href="#">Reading Comprehension</a></li>
+                        <li><a href="#">Literature Analysis</a></li>
+                        <li><a href="#">Business Writing</a></li>
+                    </ul>
+                    <button class="button">View All</button>
+                </div>
+                <div class="card">
+                    <h4>Computer Science</h4>
+                    <ul>
+                        <li><a href="#">Programming Basics</a></li>
+                        <li><a href="#">Data Structures</a></li>
+                        <li><a href="#">Algorithms</a></li>
+                        <li><a href="#">Database Management</a></li>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">Software Engineering</a></li>
+                    </ul>
+                    <button class="button">View All</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tests Section -->
+        <div id="tests" class="dashboard-section" style="display: none;">
+            <h3>Available Tests</h3>
+            <div class="grid" style="grid-template-columns: repeat(2, 1fr);">
+                <!-- Mathematics Tests -->
+                <div class="card">
+                    <h4 style="color: #1a73e8;">Mathematics</h4>
+                    <div class="test-card" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Algebra Test #1</h5>
+                        <p>Duration: 30 minutes | Questions: 10 | Difficulty: Medium</p>
+                        <button class="button" onclick="startTest('math-algebra-1')">Start Test</button>
+                    </div>
+                    <div class="test-card" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Geometry Test #1</h5>
+                        <p>Duration: 45 minutes | Questions: 15 | Difficulty: Hard</p>
+                        <button class="button" onclick="startTest('math-geometry-1')">Start Test</button>
+                    </div>
+                    <div class="test-card" style="padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Calculus Test #1</h5>
+                        <p>Duration: 60 minutes | Questions: 20 | Difficulty: Advanced</p>
+                        <button class="button" onclick="startTest('math-calculus-1')">Start Test</button>
+                    </div>
+                </div>
+
+                <!-- Science Tests -->
+                <div class="card">
+                    <h4 style="color: #1a73e8;">Science</h4>
+                    <div class="test-card" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Physics Mechanics Test</h5>
+                        <p>Duration: 45 minutes | Questions: 15 | Difficulty: Medium</p>
+                        <button class="button" onclick="startTest('science-physics-1')">Start Test</button>
+                    </div>
+                    <div class="test-card" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Chemistry Basics Test</h5>
+                        <p>Duration: 30 minutes | Questions: 10 | Difficulty: Easy</p>
+                        <button class="button" onclick="startTest('science-chemistry-1')">Start Test</button>
+                    </div>
+                    <div class="test-card" style="padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Biology Cell Structure Test</h5>
+                        <p>Duration: 40 minutes | Questions: 12 | Difficulty: Medium</p>
+                        <button class="button" onclick="startTest('science-biology-1')">Start Test</button>
+                    </div>
+                </div>
+
+                <!-- English Tests -->
+                <div class="card">
+                    <h4 style="color: #1a73e8;">English</h4>
+                    <div class="test-card" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Grammar and Vocabulary</h5>
+                        <p>Duration: 30 minutes | Questions: 25 | Difficulty: Medium</p>
+                        <button class="button" onclick="startTest('english-grammar-1')">Start Test</button>
+                    </div>
+                    <div class="test-card" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Reading Comprehension</h5>
+                        <p>Duration: 45 minutes | Questions: 15 | Difficulty: Hard</p>
+                        <button class="button" onclick="startTest('english-reading-1')">Start Test</button>
+                    </div>
+                    <div class="test-card" style="padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Writing Skills</h5>
+                        <p>Duration: 60 minutes | Questions: 10 | Difficulty: Advanced</p>
+                        <button class="button" onclick="startTest('english-writing-1')">Start Test</button>
+                    </div>
+                </div>
+
+                <!-- Computer Science Tests -->
+                <div class="card">
+                    <h4 style="color: #1a73e8;">Computer Science</h4>
+                    <div class="test-card" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Programming Fundamentals</h5>
+                        <p>Duration: 45 minutes | Questions: 15 | Difficulty: Medium</p>
+                        <button class="button" onclick="startTest('cs-programming-1')">Start Test</button>
+                    </div>
+                    <div class="test-card" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Data Structures</h5>
+                        <p>Duration: 60 minutes | Questions: 20 | Difficulty: Hard</p>
+                        <button class="button" onclick="startTest('cs-datastructures-1')">Start Test</button>
+                    </div>
+                    <div class="test-card" style="padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <h5>Database Management</h5>
+                        <p>Duration: 40 minutes | Questions: 15 | Difficulty: Medium</p>
+                        <button class="button" onclick="startTest('cs-database-1')">Start Test</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="dashboard-section" style="display: none;">
+            <h3>Your Results and Analysis</h3>
+            <div class="card">
+                <h4>Overall Performance</h4>
+                <div class="analysis-chart">
+                    [Performance Chart - Subject-wise Scores]
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Tests Taken</th>
+                            <th>Average Score</th>
+                            <th>Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mathematics</td>
+                            <td>5</td>
+                            <td>85%</td>
+                            <td>Excellent</td>
+                        </tr>
+                        <tr>
+                            <td>Science</td>
+                            <td>4</td>
+                            <td>78%</td>
+                            <td>Good</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Interface -->
+    <div id="testInterface" class="test-interface">
+        <div class="test-header">
+            <h2 id="testTitle">Test Title</h2>
+            <div class="timer" id="timer">00:00</div>
+        </div>
+        <div id="questionContainer" class="question-container">
+            <h3>Question <span id="questionNumber">1</span> of <span id="totalQuestions">10</span></h3>
+            <p id="questionText">Question text goes here</p>
+            <ul class="options-list" id="optionsList">
+                <!-- Options will be dynamically added here -->
+            </ul>
+        </div>
+        <div class="test-navigation">
+            <button class="button" onclick="previousQuestion()" id="prevBtn">Previous</button>
+            <button class="button" onclick="submitTest()" id="submitBtn" style="display: none;">Submit Test</button>
+            <button class="button" onclick="nextQuestion()" id="nextBtn">Next</button>
+        </div>
+    </div>
+
+    <script>
+        function showSection(section) {
+            // Hide all sections first
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('packagesSection').style.display = 'none';
+            document.getElementById('leaderboardSection').style.display = 'none';
+            document.getElementById('contactSection').style.display = 'none';
+            document.getElementById('loginOptions').style.display = 'none';
+            document.getElementById('studentLogin').style.display = 'none';
+            document.getElementById('studentDashboard').style.display = 'none';
+            
+            // Show the selected section
+            if (section === 'home') {
+                document.getElementById('homePage').style.display = 'block';
+            } else if (section === 'packages') {
+                document.getElementById('packagesSection').style.display = 'block';
+            } else if (section === 'leaderboard') {
+                document.getElementById('leaderboardSection').style.display = 'block';
+            } else if (section === 'contact') {
+                document.getElementById('contactSection').style.display = 'block';
+            } else if (section === 'login') {
+                document.getElementById('loginOptions').style.display = 'block';
+            } else if (section === 'dashboard') {
+                document.getElementById('studentDashboard').style.display = 'block';
+                // Default to study material tab
+                document.getElementById('studyMaterial').style.display = 'block';
+                document.getElementById('tests').style.display = 'none';
+                document.getElementById('results').style.display = 'none';
+            } else if (section === 'studyMaterial' || section === 'tests' || section === 'results') {
+                document.getElementById('studentDashboard').style.display = 'block';
+                document.getElementById('studyMaterial').style.display = section === 'studyMaterial' ? 'block' : 'none';
+                document.getElementById('tests').style.display = section === 'tests' ? 'block' : 'none';
+                document.getElementById('results').style.display = section === 'results' ? 'block' : 'none';
+            }
+        }
+
+        function showLoginOptions() {
+            showSection('login');
+        }
+
+        function showLogin(type) {
+            document.getElementById('loginOptions').style.display = 'none';
+            if(type === 'student') {
+                document.getElementById('studentLogin').style.display = 'block';
+            }
+        }
+
+        function handleStudentLogin(event) {
+            event.preventDefault();
+            document.getElementById('studentLogin').style.display = 'none';
+            showSection('dashboard');
+        }
+
+        let currentTest = null;
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let timer = null;
+
+        function startTest(subject) {
+            // Sample test data - In a real application, this would come from a server
+            const testData = {
+                'math-algebra-1': {
+                    title: 'Algebra Test #1',
+                    duration: 30, // minutes
+                    questions: [
+                        {
+                            question: 'Solve for x: 2x + 5 = 13',
+                            options: ['x = 4', 'x = 8', 'x = 6', 'x = 3'],
+                            correct: 0
+                        },
+                        {
+                            question: 'Simplify: (3x + 2)(2x - 1)',
+                            options: ['6x² + x - 2', '6x² - 3x + 2', '6x² + 4x - 2', '6x² - 3x - 2'],
+                            correct: 2
+                        },
+                        // Add more questions as needed
+                    ]
+                },
+                // Add more tests as needed
+            };
+
+            currentTest = testData[subject];
+            if (!currentTest) {
+                alert('Test content not available');
+                return;
+            }
+
+            // Initialize test interface
+            document.getElementById('testTitle').textContent = currentTest.title;
+            document.getElementById('totalQuestions').textContent = currentTest.questions.length;
+            currentQuestion = 0;
+            userAnswers = new Array(currentTest.questions.length).fill(null);
+            
+            // Show test interface
+            document.getElementById('testInterface').style.display = 'block';
+            showQuestion(0);
+            startTimer(currentTest.duration * 60); // Convert minutes to seconds
+        }
+
+        function showQuestion(index) {
+            const question = currentTest.questions[index];
+            document.getElementById('questionNumber').textContent = index + 1;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsList = document.getElementById('optionsList');
+            optionsList.innerHTML = '';
+            question.options.forEach((option, i) => {
+                const li = document.createElement('li');
+                li.className = 'option-item' + (userAnswers[index] === i ? ' selected' : '');
+                li.textContent = option;
+                li.onclick = () => selectOption(i);
+                optionsList.appendChild(li);
+            });
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.display = index === 0 ? 'none' : 'block';
+            document.getElementById('nextBtn').style.display = index === currentTest.questions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentTest.questions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestion] = optionIndex;
+            const options = document.querySelectorAll('.option-item');
+            options.forEach((option, i) => {
+                option.className = 'option-item' + (i === optionIndex ? ' selected' : '');
+            });
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < currentTest.questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function startTimer(duration) {
+            let timeLeft = duration;
+            timer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (--timeLeft < 0) {
+                    clearInterval(timer);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function submitTest() {
+            clearInterval(timer);
+            let score = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === currentTest.questions[index].correct) {
+                    score++;
+                }
+            });
+            
+            const percentage = Math.round((score / currentTest.questions.length) * 100);
+            alert(`Test completed!\nScore: ${percentage}%\nCorrect answers: ${score}/${currentTest.questions.length}`);
+            
+            document.getElementById('testInterface').style.display = 'none';
+            showSection('dashboard');
+        }
+    </script>
+</body>
+</html>
+
